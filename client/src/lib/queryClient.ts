@@ -1,7 +1,8 @@
 import { QueryClient, QueryFunction } from "@tanstack/react-query";
 
-// API Base URL configuration for cPanel deployment
-const API_BASE_URL = 'https://cybaemtech.com/php/api';
+// Environment-aware API configuration
+const isDevelopment = import.meta.env.DEV || window.location.hostname === 'localhost' || window.location.hostname.includes('replit.dev');
+const API_BASE_URL = isDevelopment ? '' : 'https://cybaemtech.com/php/api';
 
 async function throwIfResNotOk(res: Response) {
   if (!res.ok) {
@@ -12,6 +13,27 @@ async function throwIfResNotOk(res: Response) {
 
 // Helper function to construct full API URL
 function getApiUrl(endpoint: string): string {
+  if (isDevelopment) {
+    // In development, convert PHP endpoints back to Node.js format
+    const nodeEndpoint = endpoint
+      .replace('/auth.php?action=login', '/api/login')
+      .replace('/auth.php?action=register', '/api/register')
+      .replace('/auth.php?action=logout', '/api/logout')
+      .replace('/auth.php', '/api/user')
+      .replace('/tickets.php?user=my', '/api/tickets/my')
+      .replace(/\/tickets\.php\?id=(\d+)&action=comment/, '/api/tickets/$1/comments')
+      .replace(/\/tickets\.php\?id=(\d+)/, '/api/tickets/$1')
+      .replace('/tickets.php', '/api/tickets')
+      .replace('/dashboard.php', '/api/dashboard')
+      .replace(/\/categories\.php\?id=(\d+)/, '/api/categories/$1')
+      .replace(/\/categories\.php\?parentId=(\d+)/, '/api/categories/$1/subcategories')
+      .replace('/categories.php', '/api/categories')
+      .replace(/\/users\.php\?id=(\d+)/, '/api/users/$1')
+      .replace('/users.php', '/api/users')
+      .replace('/faqs.php', '/api/faqs')
+      .replace('/chat.php', '/api/chat');
+    return nodeEndpoint;
+  }
   return `${API_BASE_URL}${endpoint}`;
 }
 
