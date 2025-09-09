@@ -130,13 +130,40 @@ export default function ReportsPage() {
   const [createdDateTo, setCreatedDateTo] = useState("");
   const [dueDateFrom, setDueDateFrom] = useState("");
   const [dueDateTo, setDueDateTo] = useState("");
+  const [importFile, setImportFile] = useState<File | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const { user } = useAuth();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
   const isMobile = window.innerWidth < 768;
 
-  // Fetch dashboard stats
+  // Build filter object for API calls
+  const buildFilters = () => {
+    const filters: any = {};
+    if (dateRange && dateRange !== "all") filters.dateRange = dateRange;
+    if (statusFilter && statusFilter !== "all") filters.status = statusFilter;
+    if (priorityFilter && priorityFilter !== "all") filters.priority = priorityFilter;
+    if (categoryFilter && categoryFilter !== "all") filters.categoryId = parseInt(categoryFilter);
+    return filters;
+  };
+
+  // Fetch dashboard stats - role-based access
   const { data: stats, isLoading: isLoadingStats } = useQuery<DashboardStats>({
-    queryKey: ["/api/dashboard"],
-    enabled: !!user && user.role === "admin",
+    queryKey: ["/dashboard.php"],
+    enabled: !!user && (user.role === "admin" || user.role === "agent"),
+  });
+
+  // Fetch categories for filters
+  const { data: categories } = useQuery({
+    queryKey: ["/categories.php"],
+    enabled: !!user && (user.role === "admin" || user.role === "agent"),
+  });
+
+  // Fetch users for filters
+  const { data: users } = useQuery({
+    queryKey: ["/users.php"],
+    enabled: !!user && (user.role === "admin" || user.role === "agent"),
   });
 
   // Simulate date range filtering (last N months)
@@ -172,7 +199,7 @@ export default function ReportsPage() {
         return item.name === (categoryMap as any)[categoryFilter];
       });
 
-  // Enhanced export function that includes all filtered data
+  // Export functionality
   const handleExportReport = () => {
     const reportData = [
       ...filteredTicketVolumeData.map(item => ({
@@ -197,6 +224,34 @@ export default function ReportsPage() {
     ];
     
     exportToCSV(reportData, `report_${dateRange}_${categoryFilter}.csv`);
+    toast({
+      title: "Export Successful",
+      description: "Report has been downloaded successfully",
+    });
+  };
+
+  // Handle file selection for import
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setImportFile(file);
+    }
+  };
+
+  // Reset all filters
+  const resetFilters = () => {
+    setDateRange("30days");
+    setCompanyFilter("all");
+    setAgentFilter("all");
+    setStatusFilter("all");
+    setPriorityFilter("all");
+    setAssignedToFilter("all");
+    setCreatedByFilter("all");
+    setCategoryFilter("all");
+    setCreatedDateFrom("");
+    setCreatedDateTo("");
+    setDueDateFrom("");
+    setDueDateTo("");
   };
 
   return (
