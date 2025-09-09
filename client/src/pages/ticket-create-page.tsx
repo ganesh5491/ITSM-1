@@ -149,7 +149,13 @@ export default function TicketCreatePage() {
         formData.append('attachment', file);
       }
 
-      const res = await fetch("/tickets.php", {
+      // Use the environment-aware URL conversion for FormData uploads
+      const fullUrl = "/tickets.php".startsWith('/') ? 
+        (window.location.hostname === 'localhost' || window.location.hostname.includes('replit.dev') ? 
+          '/api/tickets' : 'https://cybaemtech.com/php/api/tickets.php') 
+        : "/tickets.php";
+        
+      const res = await fetch(fullUrl, {
         method: "POST",
         body: formData,
         credentials: 'include'
