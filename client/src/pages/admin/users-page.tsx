@@ -140,7 +140,7 @@ export default function UsersPage(): JSX.Element {
   } = useQuery<UserType[]>({
     queryKey: ["users"],
     queryFn: async () => {
-      const res = await apiRequest("GET", "/api/users");
+      const res = await apiRequest("GET", "/users.php");
       if (!res.ok) {
         const txt = await res.text();
         throw new Error(txt || "Failed to fetch users");
@@ -156,7 +156,7 @@ export default function UsersPage(): JSX.Element {
 
   const createUserMutation = useMutation({
     mutationFn: async (data: CreateUserValues) => {
-      const res = await apiRequest("POST", "/api/register", data);
+      const res = await apiRequest("POST", "/auth.php?action=register", data);
       if (!res.ok) {
         const txt = await res.text();
         throw new Error(txt || "Failed to create user");
@@ -184,7 +184,7 @@ export default function UsersPage(): JSX.Element {
       // remove undefined password if not provided
       const body = { ...data } as Record<string, any>;
       if (!body.password) delete body.password;
-      const res = await apiRequest("PUT", `/api/users/${String(id)}`, body);
+      const res = await apiRequest("PUT", `/users.php?id=${String(id)}`, body);
       if (!res.ok) {
         const txt = await res.text();
         throw new Error(txt || "Failed to update user");
@@ -209,7 +209,7 @@ export default function UsersPage(): JSX.Element {
 
   const deleteUserMutation = useMutation({
     mutationFn: async (id: string | number) => {
-      const res = await apiRequest("DELETE", `/api/users/${String(id)}`);
+      const res = await apiRequest("DELETE", `/users.php?id=${String(id)}`);
       if (!res.ok) {
         const txt = await res.text();
         throw new Error(txt || "Failed to delete user");

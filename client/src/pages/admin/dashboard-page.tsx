@@ -68,13 +68,13 @@ export default function DashboardPage() {
 
   // Fetch dashboard stats
   const { data: stats, isLoading: isLoadingStats } = useQuery<DashboardStats>({
-    queryKey: ["/api/dashboard"],
+    queryKey: ["/dashboard.php"],
     enabled: !!user && user.role === "admin",
   });
 
   // Fetch recent tickets
   const { data: tickets, isLoading: isLoadingTickets } = useQuery<TicketType[]>({
-    queryKey: ["/api/tickets"],
+    queryKey: ["/tickets.php"],
     enabled: !!user && user.role === "admin",
   });
 

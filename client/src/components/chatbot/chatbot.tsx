@@ -35,7 +35,7 @@ export default function Chatbot({ isOpen, onClose }: ChatbotProps) {
 
   // Fetch chat history
   const { data: chatMessages, isLoading } = useQuery<Message[]>({
-    queryKey: ["/api/chat"],
+    queryKey: ["/chat.php"],
     queryFn: undefined, // Uses the default fetcher
     enabled: isOpen && !!user, // Only fetch when chatbot is open and user is logged in
   });
@@ -43,11 +43,11 @@ export default function Chatbot({ isOpen, onClose }: ChatbotProps) {
   // Send message mutation
   const sendMessageMutation = useMutation({
     mutationFn: async (newMessage: string) => {
-      const res = await apiRequest("POST", "/api/chat", { message: newMessage });
+      const res = await apiRequest("POST", "/chat.php", { message: newMessage });
       return await res.json();
     },
     onSuccess: (data) => {
-      queryClient.setQueryData(["/api/chat"], (oldData: Message[] = []) => [...oldData, ...data]);
+      queryClient.setQueryData(["/chat.php"], (oldData: Message[] = []) => [...oldData, ...data]);
       scrollToBottom();
     },
     onError: (error) => {

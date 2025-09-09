@@ -65,22 +65,22 @@ export default function KnowledgeBasePage() {
 
   // Fetch categories
   const { data: categories, isLoading: isLoadingCategories } = useQuery<Category[]>({
-    queryKey: ["/api/categories"],
+    queryKey: ["/categories.php"],
   });
 
   // Fetch FAQs
   const { data: faqs, isLoading: isLoadingFaqs } = useQuery<Faq[]>({
-    queryKey: ["/api/faqs", selectedCategory],
+    queryKey: ["/faqs.php", selectedCategory],
     queryFn: async ({ queryKey }) => {
       const categoryId = queryKey[1];
       if (categoryId) {
-        const res = await fetch(`/api/faqs?categoryId=${categoryId}`, {
+        const res = await fetch(`/faqs.php?categoryId=${categoryId}`, {
           credentials: "include",
         });
         if (!res.ok) throw new Error("Failed to fetch FAQs");
         return res.json();
       } else {
-        const res = await fetch("/api/faqs", {
+        const res = await fetch("/faqs.php", {
           credentials: "include",
         });
         if (!res.ok) throw new Error("Failed to fetch FAQs");

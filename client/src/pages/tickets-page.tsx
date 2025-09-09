@@ -43,13 +43,13 @@ export default function TicketsPage() {
 
   // Fetch user tickets
   const { data: tickets, isLoading: isLoadingTickets } = useQuery<any[]>({
-    queryKey: ["/api/tickets/my"],
+    queryKey: ["/tickets.php?user=my"],
     enabled: !!user,
   });
 
   // Fetch categories for filters
   const { data: categories, isLoading: isLoadingCategories } = useQuery<Category[]>({
-    queryKey: ["/api/categories"],
+    queryKey: ["/categories.php"],
     enabled: !!user,
   });
 

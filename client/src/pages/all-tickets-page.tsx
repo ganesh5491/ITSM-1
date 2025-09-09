@@ -38,19 +38,19 @@ export default function AllTicketsPage() {
 
   // Fetch all tickets (for admins and agents)
   const { data: tickets, isLoading: isLoadingTickets } = useQuery<any[]>({
-    queryKey: ["/api/tickets"],
+    queryKey: ["/tickets.php"],
     enabled: !!user,
   });
 
   // Fetch ticket categories
   const { data: categories } = useQuery<Category[]>({
-    queryKey: ["/api/categories"],
+    queryKey: ["/categories.php"],
     enabled: !!user,
   });
 
   // Fetch users (for assignment filter)
   const { data: users } = useQuery<User[]>({
-    queryKey: ["/api/users"],
+    queryKey: ["/users.php"],
     enabled: !!user && user.role === "admin",
   });
 

@@ -35,19 +35,19 @@ export default function HomePage() {
 
   // Fetch dashboard stats
   const { data: stats, isLoading: isLoadingStats } = useQuery<DashboardStats>({
-    queryKey: ["/api/dashboard"],
+    queryKey: ["/dashboard.php"],
     enabled: !!user,
   });
 
   // Fetch recent tickets
   const { data: tickets, isLoading: isLoadingTickets } = useQuery<Ticket[]>({
-    queryKey: ["/api/tickets"],
+    queryKey: ["/tickets.php"],
     enabled: !!user,
   });
 
   // Fetch popular FAQs
   const { data: faqs, isLoading: isLoadingFaqs } = useQuery<Faq[]>({
-    queryKey: ["/api/faqs"],
+    queryKey: ["/faqs.php"],
     enabled: !!user,
   });
 

@@ -85,18 +85,18 @@ export default function CategoriesPage() {
 
   // Fetch categories
   const { data: categories, isLoading: isLoadingCategories } = useQuery<Category[]>({
-    queryKey: ["/api/categories"],
+    queryKey: ["/categories.php"],
     enabled: !!user && user.role === "admin",
   });
 
   // Create category mutation
   const createCategoryMutation = useMutation({
     mutationFn: async (data: { name: string; parentId?: number }) => {
-      const res = await apiRequest("POST", "/api/categories", data);
+      const res = await apiRequest("POST", "/categories.php", data);
       return await res.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/categories"] });
+      queryClient.invalidateQueries({ queryKey: ["/categories.php"] });
       toast({
         title: "Category created",
         description: "The category has been created successfully.",
@@ -116,14 +116,14 @@ export default function CategoriesPage() {
   // Update category mutation
   const updateCategoryMutation = useMutation({
     mutationFn: async (data: { id: number; name: string; parentId?: number }) => {
-      const res = await apiRequest("PUT", `/api/categories/${data.id}`, {
+      const res = await apiRequest("PUT", `/categories.php?id=${data.id}`, {
         name: data.name,
         parentId: data.parentId,
       });
       return await res.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/categories"] });
+      queryClient.invalidateQueries({ queryKey: ["/categories.php"] });
       toast({
         title: "Category updated",
         description: "The category has been updated successfully.",
@@ -144,11 +144,11 @@ export default function CategoriesPage() {
   // Delete category mutation
   const deleteCategoryMutation = useMutation({
     mutationFn: async (id: number) => {
-      const res = await apiRequest("DELETE", `/api/categories/${id}`);
+      const res = await apiRequest("DELETE", `/categories.php?id=${id}`);
       return await res.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/categories"] });
+      queryClient.invalidateQueries({ queryKey: ["/categories.php"] });
       toast({
         title: "Category deleted",
         description: "The category has been deleted successfully.",
