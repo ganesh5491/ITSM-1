@@ -286,7 +286,7 @@ export default function ReportsPage() {
           )}
 
           {user && (user.role === "admin" || user.role === "agent") && (
-            <>
+            <div>
 
           {/* Enhanced Filters */}
           <Card className="mb-6">
@@ -737,6 +737,7 @@ export default function ReportsPage() {
               </div>
             </CardContent>
           </Card>
+          </div>
           )}
         </main>
       </div>
