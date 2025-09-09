@@ -266,9 +266,27 @@ export default function ReportsPage() {
         {/* Main content scrollable area */}
         <main className="flex-1 overflow-y-auto p-4 md:p-6">
           <div className="mb-6">
-            <h2 className="text-lg font-semibold text-gray-800">Support Analytics</h2>
-            <p className="text-sm text-gray-500">Monitor performance metrics and support trends</p>
+            <h2 className="text-lg font-semibold text-gray-800">
+              {user?.role === "admin" ? "Admin" : "Agent"} Analytics
+            </h2>
+            <p className="text-sm text-gray-500">
+              Monitor {user?.role === "admin" ? "global" : "your assigned"} performance metrics and support trends
+            </p>
           </div>
+
+          {/* Role-based access check */}
+          {(!user || (user.role !== "admin" && user.role !== "agent")) && (
+            <Card className="mb-6">
+              <CardContent className="p-8 text-center">
+                <AlertCircle className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 mb-2">Access Restricted</h3>
+                <p className="text-gray-500">Reports are only available for admins and agents.</p>
+              </CardContent>
+            </Card>
+          )}
+
+          {user && (user.role === "admin" || user.role === "agent") && (
+            <>
 
           {/* Enhanced Filters */}
           <Card className="mb-6">
@@ -719,6 +737,7 @@ export default function ReportsPage() {
               </div>
             </CardContent>
           </Card>
+          )}
         </main>
       </div>
     </div>

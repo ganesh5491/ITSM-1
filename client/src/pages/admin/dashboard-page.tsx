@@ -95,7 +95,8 @@ export default function DashboardPage() {
   };
 
   // Format date
-  const formatDate = (dateString: string) => {
+  const formatDate = (dateString: string | Date) => {
+    if (!dateString) return 'N/A';
     return new Date(dateString).toLocaleString();
   };
 
