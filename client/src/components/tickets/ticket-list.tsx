@@ -75,10 +75,10 @@ export default function TicketList({
   // Delete ticket mutation
   const deleteTicketMutation = useMutation({
     mutationFn: async (ticketId: number) => {
-      await apiRequest("DELETE", `/api/tickets/${ticketId}`);
+      await apiRequest("DELETE", `/tickets.php?id=${ticketId}`);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/tickets"] });
+      queryClient.invalidateQueries({ queryKey: ["/tickets.php"] });
       toast({
         title: "Ticket deleted",
         description: "The ticket has been deleted successfully.",
@@ -98,10 +98,10 @@ export default function TicketList({
   // Update ticket status mutation
   const updateTicketMutation = useMutation({
     mutationFn: async ({ id, status }: { id: number; status: string }) => {
-      await apiRequest("PATCH", `/api/tickets/${id}`, { status });
+      await apiRequest("PUT", `/tickets.php?id=${id}`, { status });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/tickets"] });
+      queryClient.invalidateQueries({ queryKey: ["/tickets.php"] });
       toast({
         title: "Ticket updated",
         description: "The ticket status has been updated successfully.",
@@ -119,12 +119,12 @@ export default function TicketList({
   // Assign ticket to self mutation
   const assignTicketMutation = useMutation({
     mutationFn: async (ticketId: number) => {
-      await apiRequest("PATCH", `/api/tickets/${ticketId}`, {
+      await apiRequest("PUT", `/tickets.php?id=${ticketId}`, {
         assignedToId: user?.id
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/tickets"] });
+      queryClient.invalidateQueries({ queryKey: ["/tickets.php"] });
       toast({
         title: "Ticket assigned",
         description: "The ticket has been assigned to you.",

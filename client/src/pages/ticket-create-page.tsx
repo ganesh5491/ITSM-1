@@ -91,19 +91,19 @@ export default function TicketCreatePage() {
 
   // Fetch categories
   const { data: categories, isLoading: isLoadingCategories } = useQuery<Category[]>({
-    queryKey: ["/api/categories"],
+    queryKey: ["/categories.php"],
     enabled: !!user,
   });
 
   // Get subcategories for selected category
   const { data: subcategories, isLoading: isLoadingSubcategories } = useQuery<Category[]>({
-    queryKey: [`/api/categories/${selectedCategoryId}/subcategories`],
+    queryKey: [`/categories.php?parentId=${selectedCategoryId}`],
     enabled: !!selectedCategoryId && selectedCategoryId !== "",
   });
 
   // Fetch all users (agents and admins)
   const { data: allUsers, isLoading: isLoadingUsers } = useQuery<User[]>({
-    queryKey: ["/api/users"],
+    queryKey: ["/users.php"],
     enabled: !!user,
   });
 
@@ -149,7 +149,7 @@ export default function TicketCreatePage() {
         formData.append('attachment', file);
       }
 
-      const res = await fetch("/api/tickets", {
+      const res = await fetch("/tickets.php", {
         method: "POST",
         body: formData,
         credentials: 'include'

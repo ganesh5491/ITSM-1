@@ -59,20 +59,20 @@ export default function TicketDetailPage() {
     isLoading: isLoadingTicket,
     error 
   } = useQuery<TicketWithRelations>({
-    queryKey: [`/api/tickets/${ticketId}`],
+    queryKey: [`/tickets.php?id=${ticketId}`],
     enabled: !!user && !!ticketId,
   });
 
   // Fetch users for assignment dropdown
   const { data: users } = useQuery<any[]>({
-    queryKey: ["/api/users"],
+    queryKey: ["/users.php"],
     enabled: !!user,
   });
 
   // Mutation for updating ticket status
   const updateTicketMutation = useMutation({
     mutationFn: async ({ status, assignedToId, priority }: { status?: string; assignedToId?: number | null; priority?: string }) => {
-      const res = await apiRequest("PATCH", `/api/tickets/${ticketId}`, {
+      const res = await apiRequest("PUT", `/tickets.php?id=${ticketId}`, {
         status,
         assignedToId,
         priority
@@ -80,7 +80,7 @@ export default function TicketDetailPage() {
       return await res.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [`/api/tickets/${ticketId}`] });
+      queryClient.invalidateQueries({ queryKey: [`/tickets.php?id=${ticketId}`] });
       toast({
         title: "Ticket updated",
         description: "The ticket has been updated successfully.",
@@ -98,14 +98,14 @@ export default function TicketDetailPage() {
   // Mutation for adding a comment
   const addCommentMutation = useMutation({
     mutationFn: async ({ ticketId, content, isInternal }: { ticketId: number; content: string; isInternal: boolean }) => {
-      const res = await apiRequest("POST", `/api/tickets/${ticketId}/comments`, {
+      const res = await apiRequest("POST", `/tickets.php?id=${ticketId}&action=comment`, {
         content,
         isInternal
       });
       return await res.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [`/api/tickets/${ticketId}`] });
+      queryClient.invalidateQueries({ queryKey: [`/tickets.php?id=${ticketId}`] });
       setCommentText("");
       setIsInternalNote(false);
       toast({
