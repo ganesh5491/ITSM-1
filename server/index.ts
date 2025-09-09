@@ -57,8 +57,8 @@ app.use((req, res, next) => {
   }
 
   // ✅ Proper bind for Render & Replit - Force port 5000 for Replit compatibility
-  const port = 5001;
-  const host = "127.0.0.1";
+  const port = 5000;
+  const host = "0.0.0.0";
 
   server.listen(port, host, () => {
     log(`🚀 Server running at http://${host}:${port}`);
