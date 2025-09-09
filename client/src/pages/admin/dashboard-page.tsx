@@ -66,16 +66,16 @@ export default function DashboardPage() {
   const { user } = useAuth();
   const isMobile = window.innerWidth < 768;
 
-  // Fetch dashboard stats
+  // Fetch dashboard stats - role-based access
   const { data: stats, isLoading: isLoadingStats } = useQuery<DashboardStats>({
     queryKey: ["/dashboard.php"],
-    enabled: !!user && user.role === "admin",
+    enabled: !!user,
   });
 
-  // Fetch recent tickets
+  // Fetch recent tickets - role-based access
   const { data: tickets, isLoading: isLoadingTickets } = useQuery<TicketType[]>({
-    queryKey: ["/tickets.php"],
-    enabled: !!user && user.role === "admin",
+    queryKey: user?.role === "user" ? ["/tickets.php?user=my"] : ["/tickets.php"],
+    enabled: !!user,
   });
 
   // Get status color based on ticket status
@@ -106,13 +106,13 @@ export default function DashboardPage() {
 
       {/* Main content */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        <Header toggleSidebar={() => setSidebarOpen(!sidebarOpen)} title="Admin Dashboard" />
+        <Header toggleSidebar={() => setSidebarOpen(!sidebarOpen)} title={`${user?.role === 'admin' ? 'Admin' : user?.role === 'agent' ? 'Agent' : 'User'} Dashboard`} />
 
         {/* Main content scrollable area */}
         <main className="flex-1 overflow-y-auto p-4 md:p-6">
           <div className="mb-6">
             <h2 className="text-2xl font-semibold text-gray-800">Dashboard Overview</h2>
-            <p className="text-gray-500">Welcome to the IT Helpdesk Administration Dashboard</p>
+            <p className="text-gray-500">Welcome to the IT Helpdesk {user?.role === 'admin' ? 'Administration' : user?.role === 'agent' ? 'Agent' : 'User'} Dashboard</p>
           </div>
 
           {/* Stats Overview */}
